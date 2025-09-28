@@ -25,7 +25,7 @@ class TimerController: NSObject {
     }
     
     func startBreak() {
-        timerModel.startBreak()
+        timerModel.startShortBreak()
         notificationManager?.showNotification(
             title: "Break Started",
             body: "Take a \(Int(timerModel.getSettings().shortBreakDuration / 60)) minute break!",

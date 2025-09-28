@@ -64,6 +64,9 @@ class PetView: NSView {
         
         // Show a brief tooltip
         showTooltip("Meow! 🐱")
+        
+        // Post notification for pet interaction
+        NotificationCenter.default.post(name: .petClicked, object: nil)
     }
     
     private func showTooltip(_ message: String) {

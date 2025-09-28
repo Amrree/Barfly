@@ -71,79 +71,27 @@ class PetModel: ObservableObject {
     }
     
     private func setupAnimations() {
-        // Create pixel art cat animations
-        createCatAnimations()
+        // Create pixel art cat animations using the sprite generator
+        let catSprites = CatSpriteGenerator.generateCatSprites()
+        
+        for (stateName, frames) in catSprites {
+            let animationKey = "cat_\(stateName)"
+            let duration = getAnimationDuration(for: stateName)
+            animations[animationKey] = PetAnimation(name: stateName, frames: frames, duration: duration)
+        }
     }
     
-    private func createCatAnimations() {
-        // Idle animation (blinking)
-        let idleFrames = createPixelArtFrames([
-            createPixelCatImage(eyes: "oo", mouth: "="),  // Eyes open
-            createPixelCatImage(eyes: "oo", mouth: "="),  // Eyes open
-            createPixelCatImage(eyes: "oo", mouth: "="),  // Eyes open
-            createPixelCatImage(eyes: "--", mouth: "="),  // Eyes closed
-        ])
-        animations["cat_idle"] = PetAnimation(name: "idle", frames: idleFrames, duration: 2.0)
-        
-        // Walking animation
-        let walkFrames = createPixelArtFrames([
-            createPixelCatImage(eyes: "oo", mouth: "=", legs: "||"),   // Standing
-            createPixelCatImage(eyes: "oo", mouth: "=", legs: "\\/"),  // Left leg forward
-            createPixelCatImage(eyes: "oo", mouth: "=", legs: "||"),   // Standing
-            createPixelCatImage(eyes: "oo", mouth: "=", legs: "/\\"),  // Right leg forward
-        ])
-        animations["cat_walking"] = PetAnimation(name: "walking", frames: walkFrames, duration: 0.8)
-        
-        // Sleeping animation
-        let sleepFrames = createPixelArtFrames([
-            createPixelCatImage(eyes: "--", mouth: "~", body: "zZz"),  // Sleeping
-            createPixelCatImage(eyes: "--", mouth: "~", body: "zZz"),  // Sleeping
-            createPixelCatImage(eyes: "--", mouth: "~", body: "zZz"),  // Sleeping
-            createPixelCatImage(eyes: "--", mouth: "~", body: "zZz"),  // Sleeping
-        ])
-        animations["cat_sleeping"] = PetAnimation(name: "sleeping", frames: sleepFrames, duration: 3.0)
+    private func getAnimationDuration(for stateName: String) -> Double {
+        switch stateName {
+        case "idle": return 2.0
+        case "walking": return 0.8
+        case "sleeping": return 3.0
+        case "working": return 1.5
+        case "excited": return 0.6
+        default: return 1.0
+        }
     }
     
-    private func createPixelCatImage(eyes: String = "oo", mouth: String = "=", legs: String = "||", body: String = "cat") -> NSImage {
-        let size = NSSize(width: 16, height: 16)
-        let image = NSImage(size: size)
-        
-        image.lockFocus()
-        
-        // Background
-        NSColor.clear.setFill()
-        NSRect(origin: .zero, size: size).fill()
-        
-        // Cat body (simple pixel representation)
-        NSColor.black.setFill()
-        
-        // Draw a simple cat shape
-        let catPath = NSBezierPath()
-        catPath.appendRect(NSRect(x: 6, y: 8, width: 4, height: 6))  // Body
-        catPath.appendRect(NSRect(x: 5, y: 10, width: 6, height: 4)) // Head
-        catPath.appendRect(NSRect(x: 4, y: 12, width: 2, height: 2)) // Left ear
-        catPath.appendRect(NSRect(x: 10, y: 12, width: 2, height: 2)) // Right ear
-        catPath.appendRect(NSRect(x: 7, y: 6, width: 1, height: 2))  // Left leg
-        catPath.appendRect(NSRect(x: 8, y: 6, width: 1, height: 2))  // Right leg
-        catPath.appendRect(NSRect(x: 3, y: 7, width: 2, height: 1))  // Left foot
-        catPath.appendRect(NSRect(x: 11, y: 7, width: 2, height: 1)) // Right foot
-        catPath.appendRect(NSRect(x: 2, y: 11, width: 3, height: 1)) // Tail
-        
-        catPath.fill()
-        
-        // Eyes
-        NSColor.white.setFill()
-        NSRect(x: 6, y: 11, width: 1, height: 1).fill()  // Left eye
-        NSRect(x: 9, y: 11, width: 1, height: 1).fill()  // Right eye
-        
-        image.unlockFocus()
-        
-        return image
-    }
-    
-    private func createPixelArtFrames(_ images: [NSImage]) -> [NSImage] {
-        return images
-    }
     
     func getAnimation(for state: PetState) -> PetAnimation? {
         let animationKey = "\(currentPet.rawValue)_\(getStateName(state))"
