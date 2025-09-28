@@ -1,2 +1,0 @@
-# Barfly
-A Mac barfly 
