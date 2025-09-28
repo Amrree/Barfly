@@ -41,7 +41,7 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
     
     private func createCatImage() -> NSImage? {
         // Load the resting crow image
-        guard let image = NSImage(contentsOfFile: "/Users/amre/Barfly/MacPet/crow_resting.png") else {
+        guard let image = NSImage(contentsOfFile: "/Users/amre/Barfly/KrawMacPet/crow_resting.png") else {
             print("Failed to load crow_resting.png")
             return nil
         }
@@ -121,11 +121,8 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
             self?.focusSessionCompleted()
         }
         
-        let alert = NSAlert()
-        alert.messageText = "Focus Session Started"
-        alert.informativeText = "Kraa will walk while you work, he will tire."
-        alert.addButton(withTitle: "OK")
-        alert.runModal()
+        // Start the walking animation immediately
+        startCatWalkingAnimation()
     }
     
     private func focusSessionCompleted() {
@@ -134,27 +131,23 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         // Stop the cat walking
         stopCatWalkingAnimation()
         
-        let alert = NSAlert()
-        alert.messageText = "Focus Session Complete!"
-        alert.informativeText = "Great job! Time for a break."
-        alert.addButton(withTitle: "OK")
-        alert.runModal()
+        // Focus session completed - no popup needed
     }
     
     @objc private func startBreak() {
         print("Starting break...")
         let alert = NSAlert()
-        alert.messageText = "Break Started"
-        alert.informativeText = "Time for a 5-minute break!"
-        alert.addButton(withTitle: "OK")
+        alert.messageText = "☕ Kraw's Break Time!"
+        alert.informativeText = "Your crow companion is taking a well-earned rest. Enjoy your 5-minute break - Kraw will be ready to patrol again when you return!"
+        alert.addButton(withTitle: "Enjoy Break!")
         alert.runModal()
     }
     
     @objc private func showAbout() {
         let alert = NSAlert()
-        alert.messageText = "Mac Pet"
-        alert.informativeText = "A delightful productivity companion for your menu bar.\n\nVersion 1.0"
-        alert.addButton(withTitle: "OK")
+        alert.messageText = "🐦 About Kraw"
+        alert.informativeText = "Meet Kraw, your loyal crow companion! He patrols your menu bar during focus sessions, keeping you company while you work. When you focus, Kraw walks. When you rest, Kraw rests.\n\nVersion 1.0 - The Crow Edition"
+        alert.addButton(withTitle: "Fly On!")
         alert.runModal()
     }
     
@@ -166,11 +159,11 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         isWalking = true
         var frameIndex = 0
         
-        walkingTimer = Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { [weak self] _ in
+        walkingTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { [weak self] _ in
             guard let self = self, self.isWalking else { return }
             
-            // Update walk position - slower movement
-            self.walkPosition += self.walkDirection * 4.0
+            // Update walk position - faster movement
+            self.walkPosition += self.walkDirection * 6.0
             
             // Walk within the 6 icon spaces allocated (starts 2 icons to the right)
             if self.walkPosition <= -120.0 { // 5 icons left from start = 5 * 40px = 200px, but start is at 80px, so 80-200 = -120px
@@ -200,9 +193,12 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
     }
     
     private func createWalkingImage(frameIndex: Int, offset: CGFloat) -> NSImage? {
+        // Choose the correct GIF based on walking direction (swapped)
+        let gifFile = walkDirection < 0 ? "/Users/amre/Barfly/KrawMacPet/right crow .gif" : "/Users/amre/Barfly/KrawMacPet/Left crow.gif"
+        
         // Load the walking GIF
-        guard let gifData = NSData(contentsOfFile: "/Users/amre/Barfly/MacPet/demi-zwerver-birdsprite-export.gif") else {
-            print("Failed to load walking GIF")
+        guard let gifData = NSData(contentsOfFile: gifFile) else {
+            print("Failed to load walking GIF: \(gifFile)")
             return nil
         }
         

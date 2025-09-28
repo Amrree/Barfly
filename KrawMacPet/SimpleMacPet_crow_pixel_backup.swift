@@ -156,7 +156,7 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         
         let alert = NSAlert()
         alert.messageText = "Focus Session Started"
-        alert.informativeText = "Kraa will walk while you work, he will tire."
+        alert.informativeText = "Kraw will walk while you work, he will tire."
         alert.addButton(withTitle: "OK")
         alert.runModal()
     }

@@ -121,12 +121,8 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
             self?.focusSessionCompleted()
         }
         
-        // Start the walking animation immediately
-        startCatWalkingAnimation()
-        
-        // Use simple alert instead of custom popup to avoid crashes
         let alert = NSAlert()
-        alert.messageText = "🐦 Kraa Takes Flight!"
+        alert.messageText = "🐦 Kraw Takes Flight!"
         alert.informativeText = "Your crow companion will patrol the menu bar while you focus. Watch him walk back and forth - he's keeping you company during your 25-minute work session!"
         alert.addButton(withTitle: "Let's Focus!")
         alert.runModal()
@@ -138,10 +134,9 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         // Stop the cat walking
         stopCatWalkingAnimation()
         
-        // Use simple alert instead of custom popup to avoid crashes
         let alert = NSAlert()
-        alert.messageText = "🪶 Kraa Rests!"
-        alert.informativeText = "Excellent work! Your crow companion has completed his patrol. Time to take a well-deserved break and let Kraa rest his wings."
+        alert.messageText = "🪶 Kraw Rests!"
+        alert.informativeText = "Excellent work! Your crow companion has completed his patrol. Time to take a well-deserved break and let Kraw rest his wings."
         alert.addButton(withTitle: "Time to Rest!")
         alert.runModal()
     }
@@ -149,16 +144,16 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
     @objc private func startBreak() {
         print("Starting break...")
         let alert = NSAlert()
-        alert.messageText = "☕ Kraa's Break Time!"
-        alert.informativeText = "Your crow companion is taking a well-earned rest. Enjoy your 5-minute break - Kraa will be ready to patrol again when you return!"
+        alert.messageText = "☕ Kraw's Break Time!"
+        alert.informativeText = "Your crow companion is taking a well-earned rest. Enjoy your 5-minute break - Kraw will be ready to patrol again when you return!"
         alert.addButton(withTitle: "Enjoy Break!")
         alert.runModal()
     }
     
     @objc private func showAbout() {
         let alert = NSAlert()
-        alert.messageText = "🐦 About Kraa"
-        alert.informativeText = "Meet Kraa, your loyal crow companion! He patrols your menu bar during focus sessions, keeping you company while you work. When you focus, Kraa walks. When you rest, Kraa rests.\n\nVersion 1.0 - The Crow Edition"
+        alert.messageText = "🐦 About Kraw"
+        alert.informativeText = "Meet Kraw, your loyal crow companion! He patrols your menu bar during focus sessions, keeping you company while you work. When you focus, Kraw walks. When you rest, Kraw rests.\n\nVersion 1.0 - The Crow Edition"
         alert.addButton(withTitle: "Fly On!")
         alert.runModal()
     }

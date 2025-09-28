@@ -52,7 +52,7 @@ class CrowPopupView: NSView {
         self.layer?.borderColor = NSColor(red: 0.3, green: 0.2, blue: 0.1, alpha: 1.0).cgColor
         
         // Create title label
-        titleLabel = NSTextField(labelWithString: "🐦 Kraa Takes Flight!")
+        titleLabel = NSTextField(labelWithString: "🐦 Kraw Takes Flight!")
         titleLabel.font = NSFont.boldSystemFont(ofSize: 16)
         titleLabel.textColor = NSColor(red: 0.9, green: 0.8, blue: 0.6, alpha: 1.0)
         titleLabel.alignment = .center
