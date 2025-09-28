@@ -121,6 +121,10 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
             self?.focusSessionCompleted()
         }
         
+        // Start the walking animation immediately
+        startCatWalkingAnimation()
+        
+        // Use simple alert instead of custom popup to avoid crashes
         let alert = NSAlert()
         alert.messageText = "🐦 Kraa Takes Flight!"
         alert.informativeText = "Your crow companion will patrol the menu bar while you focus. Watch him walk back and forth - he's keeping you company during your 25-minute work session!"
@@ -134,6 +138,7 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         // Stop the cat walking
         stopCatWalkingAnimation()
         
+        // Use simple alert instead of custom popup to avoid crashes
         let alert = NSAlert()
         alert.messageText = "🪶 Kraa Rests!"
         alert.informativeText = "Excellent work! Your crow companion has completed his patrol. Time to take a well-deserved break and let Kraa rest his wings."
