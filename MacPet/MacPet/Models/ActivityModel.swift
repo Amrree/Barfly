@@ -9,7 +9,7 @@ struct ActivitySession {
     
     enum SessionType {
         case focus
-        case break
+        case `break`
         case longBreak
     }
     
@@ -102,7 +102,7 @@ class ActivityModel: ObservableObject {
     func getActivityStats() -> ActivityStats {
         let totalSessions = sessions.count
         let totalFocusTime = sessions.filter { $0.type == .focus }.reduce(0) { $0 + $1.duration }
-        let totalBreakTime = sessions.filter { $0.type == .break || $0.type == .longBreak }.reduce(0) { $0 + $1.duration }
+        let totalBreakTime = sessions.filter { $0.type == .`break` || $0.type == .longBreak }.reduce(0) { $0 + $1.duration }
         
         let averageSessionLength = totalSessions > 0 ? totalFocusTime / Double(totalSessions) : 0
         
@@ -128,7 +128,7 @@ class ActivityModel: ObservableObject {
         
         dailyActivities = groupedSessions.map { date, sessions in
             let focusSessions = sessions.filter { $0.type == .focus }
-            let breakSessions = sessions.filter { $0.type == .break || $0.type == .longBreak }
+            let breakSessions = sessions.filter { $0.type == .`break` || $0.type == .longBreak }
             
             let totalFocusTime = focusSessions.reduce(0) { $0 + $1.duration }
             let totalBreakTime = breakSessions.reduce(0) { $0 + $1.duration }
@@ -223,7 +223,7 @@ extension ActivitySession: Codable {
         try container.encode(endTime, forKey: .endTime)
         try container.encode(duration, forKey: .duration)
         
-        let typeString = type == .focus ? "focus" : type == .break ? "break" : "longBreak"
+        let typeString = type == .focus ? "focus" : type == .`break` ? "break" : "longBreak"
         try container.encode(typeString, forKey: .type)
     }
     
@@ -237,7 +237,7 @@ extension ActivitySession: Codable {
         let typeString = try container.decode(String.self, forKey: .type)
         switch typeString {
         case "focus": type = .focus
-        case "break": type = .break
+        case "break": type = .`break`
         case "longBreak": type = .longBreak
         default: type = .focus
         }

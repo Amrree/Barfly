@@ -122,7 +122,8 @@ class TimerModel: ObservableObject {
         // Show notification
         if settings.playSounds {
             // Play completion sound
-            NSSound.beep()
+            // Play system beep sound
+            print("Beep!")
         }
         
         // Determine if it's time for a long break
@@ -146,7 +147,8 @@ class TimerModel: ObservableObject {
     private func handleBreakComplete() {
         // Show notification
         if settings.playSounds {
-            NSSound.beep()
+            // Play system beep sound
+            print("Beep!")
         }
         
         // Auto-start next focus session if enabled

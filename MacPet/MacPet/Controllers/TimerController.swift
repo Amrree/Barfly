@@ -3,7 +3,7 @@ import AppKit
 
 class TimerController: NSObject {
     
-    private let timerModel = TimerModel()
+    let timerModel = TimerModel()
     private var notificationManager: NotificationManager?
     
     override init() {

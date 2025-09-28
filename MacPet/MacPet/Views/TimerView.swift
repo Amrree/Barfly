@@ -117,7 +117,7 @@ class TimerView: NSView {
     }
     
     private func updateButtonStates(for state: TimerState) {
-        let isRunning = timerController?.isRunning ?? false
+        let isRunning = timerController?.timerModel.isRunning ?? false
         
         switch state {
         case .idle:
@@ -151,7 +151,7 @@ class TimerView: NSView {
     }
     
     @objc private func pauseTimer() {
-        let isRunning = timerController?.isRunning ?? false
+        let isRunning = timerController?.timerModel.isRunning ?? false
         
         if isRunning {
             timerController?.pauseTimer()

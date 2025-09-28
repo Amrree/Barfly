@@ -1,5 +1,5 @@
 import Cocoa
-import CoreAnimation
+import QuartzCore
 
 class AnimationManager: NSObject {
     

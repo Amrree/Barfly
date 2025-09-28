@@ -204,7 +204,7 @@ class ActivityView: NSView {
         contentView.addSubview(refreshButton)
     }
     
-    func refreshData() {
+    @objc func refreshData() {
         let stats = activityModel.getActivityStats()
         
         currentStreakLabel.stringValue = "\(stats.currentStreak) days"
@@ -233,14 +233,14 @@ class ActivityView: NSView {
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = .prettyPrinted
         
-        let exportData = [
+        let exportData: [String: Any] = [
             "stats": activityModel.getActivityStats(),
             "sessions": activityModel.sessions,
             "dailyActivities": activityModel.dailyActivities
         ]
         
         do {
-            let data = try encoder.encode(exportData)
+            let data = try JSONSerialization.data(withJSONObject: exportData, options: .prettyPrinted)
             try data.write(to: url)
             
             let alert = NSAlert()
@@ -316,7 +316,7 @@ class WeeklyChartView: NSView {
             let barHeight = CGFloat(activity.totalFocusTime / maxFocusTime) * (bounds.height - 40)
             let x = 20 + CGFloat(index) * barWidth
             let y = 20
-            let barRect = NSRect(x: x, y: y, width: barWidth - 2, height: barHeight)
+            let barRect = NSRect(x: x, y: CGFloat(y), width: barWidth - 2, height: CGFloat(barHeight))
             
             // Color based on focus time
             let intensity = CGFloat(activity.totalFocusTime / maxFocusTime)

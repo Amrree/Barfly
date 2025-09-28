@@ -116,10 +116,10 @@ class NSTooltip: NSWindow {
         messageLabel.frame = NSRect(x: 8, y: 6, width: 84, height: 18)
         contentView.addSubview(messageLabel)
         
-        contentView = contentView
+        // contentView is already set
         
         // Auto-hide after 2 seconds
-        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] in
+        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
             self?.close()
         }
     }

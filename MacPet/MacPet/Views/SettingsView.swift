@@ -223,16 +223,16 @@ class SettingsView: NSView {
     private func isStartAtLoginEnabled() -> Bool {
         // Check if app is set to start at login
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "com.macpet.app"
-        let loginItems = LSSharedFileListCreate(nil, kLSSharedFileListSessionLoginItems, nil)
+        let loginItems = LSSharedFileListCreate(nil, kLSSharedFileListSessionLoginItems.takeRetainedValue(), nil)
         
-        guard let loginItems = loginItems else { return false }
+        guard let loginItems = loginItems?.takeRetainedValue() else { return false }
         
         let loginItemsArray = LSSharedFileListCopySnapshot(loginItems, nil)
         guard let loginItemsArray = loginItemsArray else { return false }
         
         for item in loginItemsArray.takeRetainedValue() as! [LSSharedFileListItem] {
             if let itemURL = LSSharedFileListItemCopyResolvedURL(item, 0, nil)?.takeRetainedValue() {
-                if itemURL.path.contains(bundleIdentifier) {
+                if (itemURL as URL).path.contains(bundleIdentifier) {
                     return true
                 }
             }
@@ -322,14 +322,14 @@ class SettingsView: NSView {
     
     private func setStartAtLogin(_ enabled: Bool) {
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "com.macpet.app"
-        let loginItems = LSSharedFileListCreate(nil, kLSSharedFileListSessionLoginItems, nil)
+        let loginItems = LSSharedFileListCreate(nil, kLSSharedFileListSessionLoginItems.takeRetainedValue(), nil)
         
-        guard let loginItems = loginItems else { return }
+        guard let loginItems = loginItems?.takeRetainedValue() else { return }
         
         if enabled {
             // Add to login items
             if let appURL = NSURL.fileURL(withPath: Bundle.main.bundlePath) as CFURL? {
-                LSSharedFileListInsertItemURL(loginItems, nil, nil, nil, appURL, nil, nil)
+                LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst.takeRetainedValue(), nil, nil, appURL, nil, nil)
             }
         } else {
             // Remove from login items
@@ -338,7 +338,7 @@ class SettingsView: NSView {
             
             for item in loginItemsArray.takeRetainedValue() as! [LSSharedFileListItem] {
                 if let itemURL = LSSharedFileListItemCopyResolvedURL(item, 0, nil)?.takeRetainedValue() {
-                    if itemURL.path.contains(bundleIdentifier) {
+                    if (itemURL as URL).path.contains(bundleIdentifier) {
                         LSSharedFileListItemRemove(loginItems, item)
                     }
                 }
