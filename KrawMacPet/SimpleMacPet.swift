@@ -170,31 +170,191 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         clickTimer?.invalidate()
         
         if clickCount == 1 {
-            // Start timer for double click detection
+            // Start timer to wait for potential double click
             clickTimer = Timer.scheduledTimer(withTimeInterval: doubleClickDelay, repeats: false) { [weak self] _ in
-                self?.handleSingleClick()
+                guard let self = self else { return }
+                if self.clickCount == 1 {
+                    // Single click - poke the pet
+                    self.pokePet()
+                }
+                self.clickCount = 0
             }
         } else if clickCount == 2 {
-            // Double click detected
+            // Double click - show menu
             clickTimer?.invalidate()
-            handleDoubleClick()
+            showMenu()
             clickCount = 0
         }
     }
     
-    private func handleSingleClick() {
-        // Single click - interact with pet
-        interactWithPet()
-        clickCount = 0
-    }
-    
-    private func handleDoubleClick() {
-        // Double click - show menu
-        showMenu()
-    }
-    
     @objc private func showMenu() {
         statusItem?.menu?.popUp(positioning: nil, at: NSPoint(x: 0, y: 0), in: statusItem?.button)
+    }
+    
+    // MARK: - Pet Interactions
+    
+    private func pokePet() {
+        guard !isInteracting else { return } // Prevent multiple interactions
+        
+        isInteracting = true
+        print("Poking \(currentPetType)")
+        
+        switch currentPetType {
+        case .yellowEgg:
+            pokeEgg()
+        case .babyBird:
+            pokeBabyBird()
+        case .original:
+            pokeOriginalKraw()
+        case .newKraw:
+            pokeNewKraw()
+        }
+        
+        // Reset interaction state after animation
+        interactionTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
+            self?.isInteracting = false
+        }
+    }
+    
+    private func pokeEgg() {
+        print("🥚 Egg wobbles when poked!")
+        // Create a wobble animation
+        let originalImage = statusItem?.button?.image
+        
+        // Create a wobbled version
+        if let image = originalImage {
+            let wobbleImage = createWobbleImage(from: image)
+            statusItem?.button?.image = wobbleImage
+            
+            // Return to original after wobble
+            Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) { [weak self] _ in
+                self?.statusItem?.button?.image = originalImage
+            }
+        }
+    }
+    
+    private func pokeBabyBird() {
+        print("🐣 Baby bird chirps and flaps excitedly!")
+        // Create an excited animation
+        let originalImage = statusItem?.button?.image
+        
+        // Create an excited version
+        if let image = originalImage {
+            let excitedImage = createExcitedImage(from: image)
+            statusItem?.button?.image = excitedImage
+            
+            // Return to original after excitement
+            Timer.scheduledTimer(withTimeInterval: 1.2, repeats: false) { [weak self] _ in
+                self?.statusItem?.button?.image = originalImage
+            }
+        }
+    }
+    
+    private func pokeOriginalKraw() {
+        print("🐦 Original Kraw caws and hops!")
+        // Create a hop animation
+        let originalImage = statusItem?.button?.image
+        
+        // Create a hopped version
+        if let image = originalImage {
+            let hopImage = createHopImage(from: image)
+            statusItem?.button?.image = hopImage
+            
+            // Return to original after hop
+            Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [weak self] _ in
+                self?.statusItem?.button?.image = originalImage
+            }
+        }
+    }
+    
+    private func pokeNewKraw() {
+        print("🐦 New Kraw does a little dance!")
+        // Create a dance animation
+        let originalImage = statusItem?.button?.image
+        
+        // Create a dancing version
+        if let image = originalImage {
+            let danceImage = createDanceImage(from: image)
+            statusItem?.button?.image = danceImage
+            
+            // Return to original after dance
+            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
+                self?.statusItem?.button?.image = originalImage
+            }
+        }
+    }
+    
+    private func createWobbleImage(from image: NSImage) -> NSImage {
+        let size = image.size
+        let wobbleImage = NSImage(size: size)
+        
+        wobbleImage.lockFocus()
+        let context = NSGraphicsContext.current?.cgContext
+        
+        // Apply wobble effect (slight rotation and scale)
+        context?.translateBy(x: size.width / 2, y: size.height / 2)
+        context?.rotate(by: 0.15) // Wobble rotation
+        context?.scaleBy(x: 1.1, y: 0.9) // Slight squash
+        context?.translateBy(x: -size.width / 2, y: -size.height / 2)
+        
+        image.draw(at: NSPoint.zero, from: NSRect(origin: .zero, size: size), operation: .sourceOver, fraction: 1.0)
+        wobbleImage.unlockFocus()
+        
+        return wobbleImage
+    }
+    
+    private func createExcitedImage(from image: NSImage) -> NSImage {
+        let size = image.size
+        let excitedImage = NSImage(size: size)
+        
+        excitedImage.lockFocus()
+        let context = NSGraphicsContext.current?.cgContext
+        
+        // Apply excited effect (bigger and bouncy)
+        context?.translateBy(x: size.width / 2, y: size.height / 2)
+        context?.scaleBy(x: 1.3, y: 1.3) // Bigger
+        context?.translateBy(x: -size.width / 2, y: -size.height / 2)
+        
+        image.draw(at: NSPoint.zero, from: NSRect(origin: .zero, size: size), operation: .sourceOver, fraction: 1.0)
+        excitedImage.unlockFocus()
+        
+        return excitedImage
+    }
+    
+    private func createHopImage(from image: NSImage) -> NSImage {
+        let size = image.size
+        let hopImage = NSImage(size: size)
+        
+        hopImage.lockFocus()
+        let context = NSGraphicsContext.current?.cgContext
+        
+        // Apply hop effect (upward movement)
+        context?.translateBy(x: 0, y: 5) // Move up
+        context?.scaleBy(x: 1.1, y: 1.1) // Slightly bigger
+        
+        image.draw(at: NSPoint.zero, from: NSRect(origin: .zero, size: size), operation: .sourceOver, fraction: 1.0)
+        hopImage.unlockFocus()
+        
+        return hopImage
+    }
+    
+    private func createDanceImage(from image: NSImage) -> NSImage {
+        let size = image.size
+        let danceImage = NSImage(size: size)
+        
+        danceImage.lockFocus()
+        let context = NSGraphicsContext.current?.cgContext
+        
+        // Apply dance effect (rotation and scale)
+        context?.translateBy(x: size.width / 2, y: size.height / 2)
+        context?.rotate(by: 0.2) // Dance rotation
+        context?.scaleBy(x: 1.2, y: 1.2) // Bigger
+        context?.translateBy(x: -size.width / 2, y: -size.height / 2)
+        
+        image.draw(at: NSPoint.zero, from: NSRect(origin: .zero, size: size), operation: .sourceOver, fraction: 1.0)
+        danceImage.unlockFocus()
+        
+        return danceImage
     }
     
     // MARK: - Pet Interactions
@@ -339,6 +499,71 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
         jumpImage.unlockFocus()
         
         return jumpImage
+    }
+    
+    private func createEggImage() -> NSImage? {
+        // Yellow egg just sits there - no animation needed
+        let gifFile = "/Users/amre/Barfly/KrawMacPet/assets/images/hd-single-yellow-egg-clipart-transparent-background-735811696682996dk46wnzpqa.png"
+        
+        guard let imageData = NSData(contentsOfFile: gifFile) else {
+            print("Failed to load egg image: \(gifFile)")
+            return nil
+        }
+        
+        guard let image = NSImage(data: imageData as Data) else {
+            print("Failed to create image from egg data")
+            return nil
+        }
+        
+        // Resize to fit menu bar
+        let targetSize = NSSize(width: 22, height: 22)
+        let resizedImage = NSImage(size: targetSize)
+        resizedImage.lockFocus()
+        image.draw(in: NSRect(origin: .zero, size: targetSize))
+        resizedImage.unlockFocus()
+        return resizedImage
+    }
+    
+    private func createBabyBirdImage() -> NSImage? {
+        // Baby bird flaps wings but stays in place
+        let gifFile = "/Users/amre/Barfly/KrawMacPet/assets/images/c846ca41824ae2ba3ecab07859dafbec65188d29.gif"
+        
+        guard let gifData = NSData(contentsOfFile: gifFile) else {
+            print("Failed to load baby bird GIF: \(gifFile)")
+            return nil
+        }
+        
+        guard let imageSource = CGImageSourceCreateWithData(gifData, nil) else {
+            print("Failed to create image source from baby bird GIF")
+            return nil
+        }
+        
+        let frameCount = CGImageSourceGetCount(imageSource)
+        guard frameCount > 0 else {
+            print("Baby bird GIF has no frames")
+            return nil
+        }
+        
+        // Use current frame for animation
+        let currentFrame = self.currentFrame % frameCount
+        guard let cgImage = CGImageSourceCreateImageAtIndex(imageSource, currentFrame, nil) else {
+            print("Failed to create image from baby bird frame \(currentFrame)")
+            return nil
+        }
+        
+        let image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
+        
+        // Resize to fit menu bar
+        let targetSize = NSSize(width: 22, height: 22)
+        let resizedImage = NSImage(size: targetSize)
+        resizedImage.lockFocus()
+        image.draw(in: NSRect(origin: .zero, size: targetSize))
+        resizedImage.unlockFocus()
+        
+        // Advance frame for next animation
+        self.currentFrame += 1
+        
+        return resizedImage
     }
     
     private func createMenu() -> NSMenu {
@@ -655,26 +880,50 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
     
     private func startCatWalkingAnimation() {
         isWalking = true
-        var frameIndex = 0
         
-        // Eggs and baby bird don't walk, just animate in place
-        if currentPetType == .yellowEgg || currentPetType == .babyBird {
-            let timerInterval = getTimerInterval()
-            print("Starting egg animation with \(currentEnergyMode) mode (interval: \(timerInterval)s)")
-            
-            walkingTimer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { [weak self] _ in
-                guard let self = self, self.isWalking else { return }
-                
-                // Load egg animation from GIF (no movement)
-                if let eggImage = self.createWalkingImage(frameIndex: frameIndex, offset: 0) {
-                    self.statusItem?.button?.image = eggImage
-                }
-                
-                frameIndex += 1
-            }
+        // Each pet type has its own animation system
+        switch currentPetType {
+        case .yellowEgg:
+            startEggAnimation()
+            return
+        case .babyBird:
+            startBabyBirdAnimation()
+            return
+        case .original, .newKraw:
+            startWalkingAnimation()
             return
         }
+    }
+    
+    private func startEggAnimation() {
+        let timerInterval = getTimerInterval()
+        print("Starting egg animation with \(currentEnergyMode) mode (interval: \(timerInterval)s)")
         
+        walkingTimer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { [weak self] _ in
+            guard let self = self, self.isWalking else { return }
+            
+            // Egg just sits and occasionally wobbles - no movement
+            if let eggImage = self.createEggImage() {
+                self.statusItem?.button?.image = eggImage
+            }
+        }
+    }
+    
+    private func startBabyBirdAnimation() {
+        let timerInterval = getTimerInterval()
+        print("Starting baby bird animation with \(currentEnergyMode) mode (interval: \(timerInterval)s)")
+        
+        walkingTimer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true) { [weak self] _ in
+            guard let self = self, self.isWalking else { return }
+            
+            // Baby bird stays in place but flaps wings
+            if let babyImage = self.createBabyBirdImage() {
+                self.statusItem?.button?.image = babyImage
+            }
+        }
+    }
+    
+    private func startWalkingAnimation() {
         let timerInterval = getTimerInterval()
         print("Starting walking animation with \(currentEnergyMode) mode (interval: \(timerInterval)s)")
         
@@ -699,10 +948,10 @@ class SimpleMacPet: NSObject, NSApplicationDelegate {
             }
             
             // Load walking animation from GIF
-            if let walkingImage = self.createWalkingImage(frameIndex: frameIndex, offset: self.walkPosition) {
+            if let walkingImage = self.createWalkingImage(frameIndex: self.currentFrame, offset: self.walkPosition) {
                 self.statusItem?.button?.image = walkingImage
             }
-            frameIndex += 1
+            self.currentFrame += 1
         }
     }
     
